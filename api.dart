@@ -1,3 +1,69 @@
+// import 'package:flutter/material.dart';
+// import 'package:http/http.dart' as http;
+// import 'dart:convert';
+
+// class apiPage extends StatefulWidget {
+//   const apiPage({key});
+
+//   @override
+//   State<apiPage> createState() => _apiPageState();
+// }
+
+// class _apiPageState extends State<apiPage> {
+//   String stringResponse = 'not changed';
+//   Map mapResponse = Map();
+//   List listOfFact = [];
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     fetchData();
+//   }
+
+//   Future fetchData() async {
+//     var url = Uri.parse('https://www.thegrowingdeveloper.org/apiview?id=2');
+//     http.Response response = await http.get(url);
+//     if (response.statusCode == 200) {
+//       setState(() {
+//         mapResponse = json.decode(response.body);
+//         listOfFact = mapResponse['facts'];
+//       });
+//     } else
+//       print('Not Receiving');
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('Fetch data from internet'),
+//         backgroundColor: Colors.blue,
+//       ),
+//       body: mapResponse == null
+//           ? Container()
+//           : Column(
+//               children: <Widget>[
+//                 Text(
+//                   mapResponse['category'].toString(),
+//                   style: TextStyle(fontSize: 30),
+//                 ),
+//                 ListView.builder(
+//                   shrinkWrap: true,
+//                   itemBuilder: (context, index) {
+//                     return Container(
+//                         child: Column(
+//                       children: <Widget>[
+//                         Image.network(listOfFact[index]['image_url'])
+//                       ],
+//                     ));
+//                   },
+//                   itemCount: listOfFact == null ? 0 : listOfFact.length,
+//                 )
+//               ],
+//             ),
+//     );
+//   }
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -11,26 +77,33 @@ class apiPage extends StatefulWidget {
 
 class _apiPageState extends State<apiPage> {
   String stringResponse = 'not changed';
-  late Map mapResponse;
-  late List listOfFact;
+  Map mapResponse = Map();
+  List listOfFact = [];
 
   @override
   void initState() {
-    fetchData();
-
     super.initState();
+    fetchData();
   }
 
   Future fetchData() async {
-    var url = Uri.parse('https://www.thegrowingdeveloper.org/apiview?id=2');
-    http.Response response = await http.get(url);
-    if (response.statusCode == 200) {
-      setState(() {
-        mapResponse = json.decode(response.body);
-        listOfFact = mapResponse['facts'];
-      });
-    } else
-      print('Not Receiving');
+    try {
+      var url = Uri.parse('http://10.0.2.2:8000/greeting');
+
+      http.Response response = await http.get(url);
+      print('hi');
+
+      if (response.statusCode == 200) {
+        print('hi2');
+        setState(() {
+          mapResponse = json.decode(response.body);
+          listOfFact = mapResponse['content'];
+        });
+      } else
+        print('Not Receiving');
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -45,25 +118,46 @@ class _apiPageState extends State<apiPage> {
           : Column(
               children: <Widget>[
                 Text(
-                  mapResponse['category'].toString(),
+                  mapResponse.toString(),
                   style: TextStyle(fontSize: 30),
                 ),
-                ListView.builder(
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return Container(
-                        child: Column(
-                      children: <Widget>[
-                        Image.network(listOfFact[index]['image_url'])
-                      ],
-                    ));
+                TextButton(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: Container(
+                      padding: EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Center(
+                        child: Text(
+                          'Sign In',
+                          style: TextStyle(color: Colors.white, fontSize: 15),
+                        ),
+                      ),
+                    ),
+                  ),
+                  onPressed: () {
+                    print('clicked');
                   },
-                  itemCount: listOfFact == null ? 0 : listOfFact.length,
-                )
+                ),
+                // ListView.builder(
+                //   shrinkWrap: true,
+                //   itemBuilder: (context, index) {
+                //     return Container(
+                //         child: Column(
+                //       children: <Widget>[
+                //         Image.network(listOfFact[index]['image_url'])
+                //       ],
+                //     ));
+                //   },
+                //   itemCount: listOfFact == null ? 0 : listOfFact.length,
+                // )
               ],
             ),
     );
   }
+
   //String API
 
   // var stringResponse;
